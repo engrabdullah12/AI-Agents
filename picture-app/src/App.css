@@ -1,0 +1,62 @@
+header, footer {
+  background-color: #282c34;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
+
+.picture-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center; /* Center the gallery items */
+}
+
+.picture-card {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  text-align: center;
+  position: relative; /* Needed for positioning the delete button */
+}
+
+.picture-card img {
+  max-width: 100%;
+  height: auto;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background: darkred;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal input {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+}
