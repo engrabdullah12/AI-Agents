@@ -1,0 +1,187 @@
+{
+  "name": "Wattssapp AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook/whatsapp",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        120,
+        -80
+      ],
+      "webhookId": "example-webhook-id",
+      "id": "1f94b44e-9ac7-4e7c-b738-23e1605a6f7e"
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = $json;\n// Extract the message body and sender information from the incoming payload\nconst messageText = body.body || '';\nconst sender = body.from || '';\n\nreturn [{ message: messageText, from: sender }];"
+      },
+      "name": "Extract Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -80
+      ],
+      "id": "c942d18d-b937-44ee-82ce-610e45d644e2"
+    },
+    {
+      "parameters": {
+        "functionCode": "const aiReply = $json.text || 'No reply generated';\n\nreturn [{ reply: aiReply }];"
+      },
+      "name": "Return AI Reply",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        -80
+      ],
+      "id": "9c22d1ad-8d44-4da4-9529-e711e7d95ce1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.body }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "You are an helpful ai companion"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        580,
+        -80
+      ],
+      "id": "b2a17f9a-e621-4b5d-aa6a-17a6f39892ba",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={\n  \"reply\": \"={{ $json.reply }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1240,
+        -80
+      ],
+      "id": "4b8deb7a-bd90-4457-bd71-8cea9c78f28d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        600,
+        100
+      ],
+      "id": "3e50762d-0264-4298-b995-92c982641505",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "RupI0VLVdI4cXJp5",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "User → Sends message on WhatsApp\n\nBaileys → Receives & forwards to backend\n\nNode.js → Handles logic & sends to OpenAI\n\nOpenAI → Generates smart response\n\nNode.js → Sends reply back via Baileys\n\nSharp → (Optional) Processes images/media",
+        "height": 320,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -160
+      ],
+      "id": "de4a5d3f-af1b-4d21-876b-b695cff84d37",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Extract Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Message": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Return AI Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return AI Reply": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b8192e06-144d-438e-a974-895b60a41571",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e9a4033ccfd2cfe7abe0cf815cd794b9aeda74d01c800612260fbacc2a62d719"
+  },
+  "id": "zzbfVymeZLGpOgWb",
+  "tags": []
+}

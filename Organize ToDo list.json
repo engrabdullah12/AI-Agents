@@ -1,0 +1,386 @@
+{
+  "name": "Organize ToDo list",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "taskId": "={{ $('Get inbox tasks').item.json.id }}",
+        "updateFields": {
+          "priority": "={{ $('Your Projects').first().json.projects[$json.message.content] }}"
+        }
+      },
+      "id": "23cfaeb7-fe18-4d2a-89fb-a34172872e2e",
+      "name": "Update priority in todoist",
+      "type": "n8n-nodes-base.todoist",
+      "position": [
+        1520,
+        320
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "todoistApi": {
+          "id": "rJkpx7FFAeoxOMep",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {
+          "projectId": "2356519322"
+        }
+      },
+      "id": "b205e436-2776-440f-a6f5-fd6feb420387",
+      "name": "Get inbox tasks",
+      "type": "n8n-nodes-base.todoist",
+      "position": [
+        480,
+        320
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "todoistApi": {
+          "id": "rJkpx7FFAeoxOMep",
+          "name": "Todoist account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 💫 To setup this template\n\n1. Add your Todoist credentials\n2. Add your OpenAI credentials\n3. Set your project names and add priority",
+        "height": 256.5853658536585,
+        "width": 358.6620209059232,
+        "color": 3
+      },
+      "id": "195480c4-b31e-4245-b67f-ab330a169bfa",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": " 👆🏽 Add your projects and priority here",
+        "height": 80,
+        "width": 192.77351916376313
+      },
+      "id": "24dfcd51-af35-415b-9f76-bbbc58693408",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        260,
+        500
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": " 👇🏽 Add your Todoist credentials here",
+        "height": 80,
+        "width": 192.77351916376313
+      },
+      "id": "5615adc1-97c2-4945-9311-f91dac1cca99",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        220
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": " 👇🏽 Add your Todoist credentials here",
+        "height": 80,
+        "width": 192.77351916376313
+      },
+      "id": "d9f22b8a-b7d0-4359-9dee-2787a2015271",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        220
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": " 👆🏽 Add your OpenAI credentials here",
+        "height": 80,
+        "width": 192.77351916376313
+      },
+      "id": "7b57de5a-c812-448f-bd77-b0fce299dcdc",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        980,
+        700
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50dc1412-21f8-4158-898d-3940a146586b",
+              "name": "projects",
+              "type": "object",
+              "value": "={{ {\n  apartment: 1,\n  health: 2,\n  german: 3\n} }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9dc48e88-a485-4a47-aa35-aecc8f86765a",
+      "name": "Your Projects",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        280,
+        320
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Categorize the user's todo item to a project. Return the project name or just \"other\" if it does not belong to a project.\n\nProjects:\napartment\nhealth\ngerman\n\nTodo item:\nWatch German tutorial\nGo to Doctor\nPay the rent of the House "
+            },
+            {
+              "content": "=Projects:\n{{ $('Your Projects').first().json.projects.keys().join('\\n') }}\n\nTodo item:\n{{ $('Get inbox tasks').item.json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5ffcb4c8-c029-43d1-b8f1-66584ed915eb",
+      "name": "Categorize",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        920,
+        320
+      ],
+      "typeVersion": 1.4,
+      "credentials": {
+        "openAiApi": {
+          "id": "4r3991Oh9QoosbMX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "36dd4bc9-1282-4342-89dd-1dac81c7290e",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.parent_id === undefined || $json.parent_id === null }}\n",
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "232c4375-d994-4939-b987-928eca8c0aba",
+      "name": "If task is not a subtask",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        700,
+        320
+      ],
+      "typeVersion": 2.1,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "c4f69265-abe1-451c-8462-e68ff3b06799",
+              "operator": {
+                "type": "array",
+                "operation": "contains",
+                "rightType": "any"
+              },
+              "leftValue": "={{ $('Your Projects').first().json.projects.keys() }}",
+              "rightValue": "={{ $json.message.content }}"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5d6a4758-0d6f-4737-8f26-e3531b8b82de",
+      "name": "If other or ai hallucinates",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        1280,
+        320
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "89fZUrKv9rrJxlpU",
+          "mode": "list",
+          "cachedResultName": "Organize ToDo list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1000,
+        540
+      ],
+      "id": "068ed0f7-7522-42f5-b960-3ef653ffaae6",
+      "name": "Call n8n Workflow Tool"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        320
+      ],
+      "id": "d0ea4a92-95ac-4077-af75-b71582968732",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Your Projects": {
+      "main": [
+        [
+          {
+            "node": "Get inbox tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get inbox tasks": {
+      "main": [
+        [
+          {
+            "node": "If task is not a subtask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If task is not a subtask": {
+      "main": [
+        [
+          {
+            "node": "Categorize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorize": {
+      "main": [
+        [
+          {
+            "node": "If other or ai hallucinates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If other or ai hallucinates": {
+      "main": [
+        [
+          {
+            "node": "Update priority in todoist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Categorize",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Your Projects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6cc5ef7b-6abb-41d5-bacf-764dac2d471d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e9a4033ccfd2cfe7abe0cf815cd794b9aeda74d01c800612260fbacc2a62d719"
+  },
+  "id": "89fZUrKv9rrJxlpU",
+  "tags": []
+}
